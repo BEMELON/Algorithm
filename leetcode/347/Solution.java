@@ -7,8 +7,9 @@ class Solution {
         Map<Integer, Integer> map = new HashMap<>();
         for (int num : nums) {
             map.put(num, map.getOrDefault(num, 0) + 1);
-        }
 
+        // 1. 가장 많이 나온 순
+        // 2. 나온 횟수가 같은 경우, 숫자가 큰 순서로
         PriorityQueue<Integer> priorityQueue = new PriorityQueue<>((a, b) -> {
             if (map.get(a) == map.get(b)) {
                 return b - a;
