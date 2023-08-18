@@ -1,30 +1,40 @@
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 class Solution {
     public int maximalNetworkRank(int n, int[][] roads) {
-        boolean[][] map = new boolean[n][n];
+        Map<Integer, Set<Integer>> roadMap = new HashMap<>();
 
-        // 1. Init map
+        // 1. Init roadSet
+        for(int i = 0; i < n; i++) {
+            roadMap.put(i, new HashSet<>());
+        }
+
+        // 2. Push road
         for(int[] road: roads) {
-            map[road[0]][road[1]] = true;
-            map[road[1]][road[0]] = true;
+            Set<Integer> set = roadMap.get(road[0]);
+            set.add(road[1]);
+            roadMap.put(road[0], set);
+
+            set = roadMap.get(road[1]);
+            set.add(road[0]);
+            roadMap.put(road[1], set);
         }
 
 
-        // 2. All Case
+        // 3. All Case
         int result = -1;
         for(int i = 0; i < n; i++) {
             for(int j = i + 1; j < n; j++) {
-                int temp = 0;
-                for(int k = 0; k < n; k++) {
-                    if (map[k][i])
-                        temp++;
-                    if (map[k][j])
-                        temp++;
+                Set<Integer> a = roadMap.get(i);
+                Set<Integer> b = roadMap.get(j);
+                if (a.contains(j) && b.contains(i)) {
+                    result = Math.max(result, a.size() + b.size() - 1);
+                } else {
+                    result = Math.max(result, a.size() + b.size());
                 }
-
-                if (map[i][j] && map[j][i])
-                    temp--;
-
-                result = Math.max(result, temp);
             }
         }
 
