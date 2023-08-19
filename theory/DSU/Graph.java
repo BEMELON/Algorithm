@@ -21,8 +21,11 @@ public class Graph {
             return v;
         }
 
-        // 부모 노드에서 다시 Find
-        return this.find(parent);
+        // 루트를 찾아서 할당
+        int root = this.find(parent);
+        this.rank.set(v, root);
+
+        return root;
     }
 
     public void union(int v1, int v2) {
