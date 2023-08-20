@@ -1,50 +1,33 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 class Solution {
 
+    public int[] getFrequency(String w) {
+        int[] alphabets = new int[26];
+
+        for(char ch: w.toCharArray()) {
+            alphabets[ch - 'a'] += 1;
+        }
+
+        return alphabets;
+    }
     public boolean closeStrings(String word1, String word2) {
         if (word1.length() != word2.length())
             return false;
 
-        Map<String, Integer> m1 = new HashMap<>();
-        Map<String, Integer> m2 = new HashMap<>();
+        int[] f1 = getFrequency(word1);
+        int[] f2 = getFrequency(word2);
 
-        for(int i = 0; i < word1.length(); i++) {
-            String s = Character.toString(word1.charAt(i));
-            String s2 = Character.toString(word2.charAt(i));
-            m1.put(s, m1.getOrDefault(s, 0) + 1);
-            m2.put(s2, m2.getOrDefault(s2, 0) + 1);
-        }
-
-
-        // Operation 1) Check All alphabets are exists  
-        for(String s: m1.keySet()) {
-            if (m2.get(s) == null) {
+        for(int i = 0; i < 26; i++) {
+            if (f1[i] * f2[i] == 0 && // 알파벳이 하나의 단어에만 있는 경우
+                    f1[i] + f2[i] != 0) {
                 return false;
             }
         }
 
-        // Operation 2) Check alphabets 
-        Set<String> verified = new HashSet<>();
-        for(String s: m1.keySet()) {
-            int occur = m1.get(s);
+        // 빈도 순으로 정렬
+        Arrays.sort(f1);
+        Arrays.sort(f2);
 
-            boolean flag = true;
-            for(String w: m2.keySet()) {
-                if (!verified.contains(w) && m2.get(w) == occur) {
-                    verified.add(w);
-                    flag = false;
-                    break;
-                }
-            }
-
-            if (flag)
-                return false;
-        }
-
-        return true;
+        // 빈도가 서로 같은지 체크
+        return Arrays.equals(f1, f2);
     }
 }
