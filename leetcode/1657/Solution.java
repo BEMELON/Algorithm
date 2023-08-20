@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 class Solution {
 
     public int[] getFrequency(String w) {
