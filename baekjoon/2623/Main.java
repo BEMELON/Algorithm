@@ -7,67 +7,63 @@ import java.util.*;
 public class Main {
     static StringTokenizer stk;
     static int n, m;
-    static Map<Integer, ArrayList<Integer>> graph;
     static int[] inDegree;
+    static List<ArrayList<Integer>> list;
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         stk = new StringTokenizer(br.readLine());
         n = Integer.parseInt(stk.nextToken());
-        m = Integer.parseInt(stk.nextToken());
-
-        graph = new HashMap<>();
+        list = new ArrayList<>();
         for(int i = 0; i <= n; i++)
-            graph.put(i, new ArrayList<>());
-
+            list.add(new ArrayList<>());
         inDegree = new int[n + 1];
+
+        m = Integer.parseInt(stk.nextToken());
         for(int i = 0; i < m; i++) {
             stk = new StringTokenizer(br.readLine());
             int len = Integer.parseInt(stk.nextToken());
-
             int prev = -1;
             for(int j = 0; j < len; j++) {
-                int curr = Integer.parseInt(stk.nextToken());
-
+                int node = Integer.parseInt(stk.nextToken());
                 if (prev != -1) {
-                    graph.get(prev).add(curr);
-                    inDegree[curr]++;
+                    list.get(prev).add(node);
+                    inDegree[node]++;
                 }
-
-                prev = curr;
+                prev = node;
             }
         }
+
 
         Queue<Integer> queue = new LinkedList<>();
-        List<Integer> order = new ArrayList<>();
         for(int i = 1; i <= n; i++) {
-            if (inDegree[i] == 0) {
+            if (inDegree[i] == 0)
                 queue.add(i);
-            }
         }
 
+        StringBuilder sb = new StringBuilder();
+        List<Integer> visited = new LinkedList<>();
         while (!queue.isEmpty()) {
-            int curr = queue.poll();
-            order.add(curr);
-            for(int next: graph.get(curr)) {
+            int el = queue.poll();
+            sb.append(el).append("\n");
+            visited.add(el);
+            for(int next: list.get(el)) {
                 inDegree[next]--;
 
-                if (inDegree[next] == 0)
+                if (inDegree[next] == 0) {
                     queue.add(next);
+                }
             }
         }
 
-        if (order.size() != n) {
-            bw.write("0");
+        if (visited.size() != n) {
+            bw.write("0\n");
         } else {
-            for(int el: order) {
-                bw.write(el + "\n");
-            }
+            bw.write(sb.toString());
         }
 
         br.close();
-        bw.flush();
         bw.close();
     }
 }
