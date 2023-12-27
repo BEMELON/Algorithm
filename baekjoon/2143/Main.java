@@ -2,88 +2,98 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
     static StringTokenizer stk;
+    static long T;
 
-    static int T;
-    static int[] A, B;
+    static long lenOfA, lenOfB;
+
+    static long[] A, B;
+
+    static List<Long> sumOfA, sumOfB;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         T = Integer.parseInt(br.readLine());
+        lenOfA = Long.parseLong(br.readLine());
+        A = new long[(int) lenOfA];
 
-        int n = Integer.parseInt(br.readLine());
         stk = new StringTokenizer(br.readLine());
-        A = new int[n];
-        for(int i = 0; i < n; i++) {
-            A[i] = Integer.parseInt(stk.nextToken());
+        for(int i = 0; i < lenOfA; i++) {
+            A[i] = Long.parseLong(stk.nextToken());
         }
 
-        n = Integer.parseInt(br.readLine());
-        B = new int[n];
+        lenOfB = Long.parseLong(br.readLine());
         stk = new StringTokenizer(br.readLine());
-        for(int i = 0; i < n; i++) {
-            B[i] = Integer.parseInt(stk.nextToken());
+        B = new long[(int) lenOfB];
+        for(int i = 0; i < lenOfB; i++) {
+            B[i] = Long.parseLong(stk.nextToken());
         }
-
-        int[] sumOfA = new int[(A.length * (A.length + 1)) / 2];
-        int idx = 0;
-        for(int i = 0; i < A.length; i++) {
-            int sum = 0;
-            for(int j = i; j < A.length; j++) {
-                sum += A[j];
-                sumOfA[idx++] = sum;
-            }
-        }
-
-        long[] sumOfB = new long[(B.length * (B.length + 1)) / 2];
-        idx = 0;
-        for(int i = 0; i < B.length; i++) {
-            int sum = 0;
-            for(int j = i; j < B.length; j++) {
-                sum += B[j];
-                sumOfB[idx++] = sum;
-            }
-        }
-
-        Arrays.sort(sumOfA);
-        Arrays.sort(sumOfB);
-
-        int left = 0;
-        int right = sumOfB.length - 1;
 
         long result = 0;
-        while (left < sumOfA.length && right >= 0) {
-            long valueA = sumOfA[left];
-            long valueB = sumOfB[right];
+        sumOfA = new ArrayList<>();
+        sumOfB = new ArrayList<>();
 
-            if (valueB + valueA == T) {
-                long equalACnt = 0;
-                while (left < sumOfA.length && valueA == sumOfA[left]) {
-                    left++;
-                    equalACnt++;
+        for(int i = 0; i < lenOfA; i++) {
+            long temp = A[i];
+            for(int j = i + 1; j < lenOfA; j++) {
+                sumOfA.add(temp);
+                temp += A[j];
+            }
+            sumOfA.add(temp);
+        }
+
+
+        for(int i = 0; i < lenOfB; i++) {
+            long temp = B[i];
+            for(int j = i + 1; j < lenOfB; j++) {
+                sumOfB.add(temp);
+                temp += B[j];
+            }
+            sumOfB.add(temp);
+        }
+
+        sumOfB.sort(Comparator.comparingLong(a -> a));
+        sumOfA.sort(Comparator.comparingLong(a -> a));
+        int left = 0, right = sumOfB.size() - 1;
+
+        while (left < sumOfA.size() && right >= 0) {
+            long elementOfA = sumOfA.get(left);
+            long elementOfB = sumOfB.get(right);
+            if (elementOfB + elementOfA == T) {
+                int leftCursor = left;
+                int leftCount = 0;
+                while (leftCursor < sumOfA.size() && sumOfA.get(leftCursor) == elementOfA) {
+                    leftCursor++;
+                    leftCount++;
                 }
 
-                long equalBCnt = 0;
-                while (right >= 0 && valueB == sumOfB[right]) {
-                    right--;
-                    equalBCnt++;
+                left = leftCursor;
+
+                int rightCursor = right;
+                int rightCount = 0;
+                while (rightCursor >= 0 && sumOfB.get(rightCursor) == elementOfB) {
+                    rightCursor--;
+                    rightCount++;
                 }
 
-                result += (equalACnt * equalBCnt);
-            } else if (valueB + valueA > T) {
+                right = rightCursor;
+
+                result += ((long) leftCount * rightCount);
+            } else if (elementOfB + elementOfA > T) {
                 right--;
             } else {
                 left++;
             }
         }
+
         bw.write(result + "\n");
         br.close();
         bw.close();
