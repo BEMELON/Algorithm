@@ -13,3 +13,4 @@
 
 # Current Work
 [![Solved.ac Profile](http://mazassumnida.wtf/api/v2/generate_badge?boj=hgdkim2)](https://solved.ac/hgdkim2/)
+![Leetcode Stats](https://leetcard.jacoblin.cool/BEMELON)
