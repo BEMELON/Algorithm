@@ -1,22 +1,22 @@
 class Solution {
     fun trap(height: IntArray): Int {
-        val leftMaxHeight = IntArray(height.size)
-        val rightMaxHeight = IntArray(height.size)
+        if (height.size == 1) return 0
 
-
-        leftMaxHeight[0] = height[0]
-        for (i in 1 until height.size) {
-            leftMaxHeight[i] = Math.max(height[i], leftMaxHeight[i - 1])
-        }
-
-        rightMaxHeight[height.size - 1] = height.last()
-        for (i in height.size - 2 downTo 0) {
-            rightMaxHeight[i] = Math.max(height[i], rightMaxHeight[i + 1])
-        }
+        var (left, right) = Pair(0, height.size - 1)
+        var (leftMax, rightMax) = Pair(height[left], height[right])
 
         var result = 0
-        for (i in 1 until height.size - 1) {
-            result += Math.max(0, Math.min(leftMaxHeight[i - 1], rightMaxHeight[i + 1]) - height[i])
+        while (left < right) {
+            leftMax = Math.max(leftMax, height[left])
+            rightMax = Math.max(rightMax, height[right])
+
+            if (leftMax < rightMax) {
+                result += (leftMax - height[left])
+                left++
+            } else {
+                result += (rightMax - height[right])
+                right--
+            }
         }
 
         return result
