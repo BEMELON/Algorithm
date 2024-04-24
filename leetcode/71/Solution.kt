@@ -12,7 +12,7 @@ class Solution {
             } else if (word != "" && word != ".") {
                 stack.add(word)
             }
-s        }
+        }
 
         val sb = StringBuilder()
         return with (sb) {
